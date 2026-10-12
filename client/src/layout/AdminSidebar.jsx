@@ -1,6 +1,7 @@
 import { NavLink as RouterNavLink, useLocation, useNavigate } from 'react-router-dom';
-import { NavLink, Stack, Box, Group, Text, ThemeIcon } from '@mantine/core';
+import { NavLink, Stack, Box, Group, Text } from '@mantine/core';
 import { IconShieldLock, IconLayoutDashboard, IconBuildingSkyscraper, IconArrowLeft } from '@tabler/icons-react';
+import { BrandLogo } from '../components/BrandLogo.jsx';
 
 const ADMIN_NAV = [
   { label: 'Overview', to: '/admin', icon: IconLayoutDashboard },
@@ -14,15 +15,13 @@ export function AdminSidebar() {
   return (
     <Stack h="100%" justify="space-between" p="md" gap={0}>
       <Box>
-        <Group gap={8} mb="xl" pl={4}>
-          <ThemeIcon size={32} radius="md" variant="filled" color="dark">
-            <IconShieldLock size={18} />
-          </ThemeIcon>
-          <div>
+        <Stack gap={6} mb="xl" pl={4}>
+          <BrandLogo height={26} />
+          <Group gap={6}>
+            <IconShieldLock size={14} />
             <Text fw={700} size="sm" lh={1.1}>Platform Admin</Text>
-            <Text size="xs" c="dimmed">NexusCRM</Text>
-          </div>
-        </Group>
+          </Group>
+        </Stack>
 
         <Stack gap={4}>
           {ADMIN_NAV.map((item) => {

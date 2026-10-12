@@ -1,5 +1,6 @@
 import { Box, Flex, Stack, Text, Title, Group, Paper, SimpleGrid, ThemeIcon } from '@mantine/core';
-import { IconStack3, IconBolt, IconChartArrowsVertical, IconCalendarEvent, IconShieldCheck } from '@tabler/icons-react';
+import { BrandLogo } from '../../components/BrandLogo.jsx';
+import { IconBolt, IconChartArrowsVertical, IconCalendarEvent, IconShieldCheck } from '@tabler/icons-react';
 
 const FEATURES = [
   { icon: IconChartArrowsVertical, title: 'Pipeline & forecasting', text: 'Kanban deals, weighted forecasts, win-rate tracking' },
@@ -26,10 +27,7 @@ export function AuthLayout({ children }) {
         }}
       >
         <Group gap={10}>
-          <Box className="brand-mark" w={38} h={38} style={{ borderRadius: 10, display: 'grid', placeItems: 'center' }}>
-            <IconStack3 size={21} color="white" />
-          </Box>
-          <Text fw={800} size="xl">NexusCRM</Text>
+          <BrandLogo height={40} onDark />
         </Group>
 
         <Stack gap="xl">
@@ -57,16 +55,13 @@ export function AuthLayout({ children }) {
           </SimpleGrid>
         </Stack>
 
-        <Text size="xs" c="#6b7193">© {new Date().getFullYear()} NexusCRM. All rights reserved.</Text>
+        <Text size="xs" c="#6b7193">© {new Date().getFullYear()} Unizova Technologies. All rights reserved.</Text>
       </Flex>
 
       <Flex flex={1} align="center" justify="center" p="xl">
         <Box w="100%" maw={400}>
           <Group gap={8} mb="xl" hiddenFrom="md">
-            <Box className="brand-mark" w={32} h={32} style={{ borderRadius: 9, display: 'grid', placeItems: 'center' }}>
-              <IconStack3 size={18} color="white" />
-            </Box>
-            <Text fw={800} size="lg">NexusCRM</Text>
+            <BrandLogo height={36} />
           </Group>
           {children}
         </Box>

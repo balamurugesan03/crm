@@ -1,6 +1,6 @@
 import { NavLink as RouterNavLink, useLocation } from 'react-router-dom';
 import { Stack, Box, Group, Text, ScrollArea, Avatar, Badge } from '@mantine/core';
-import { IconStack3 } from '@tabler/icons-react';
+import { BrandLogo } from '../components/BrandLogo.jsx';
 import { navSections, bottomNavItems } from './navItems.js';
 import { useAuthStore } from '../store/authStore.js';
 import { useT } from '../i18n/index.js';
@@ -29,12 +29,9 @@ export function Sidebar({ onNavigate }) {
     <Stack h="100%" justify="space-between" gap={0} className="sidebar">
       <Box style={{ minHeight: 0, display: 'flex', flexDirection: 'column', flex: 1 }}>
         <Group gap={10} px="md" h={64} wrap="nowrap" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-          <Box className="brand-mark" w={34} h={34} style={{ borderRadius: 10, display: 'grid', placeItems: 'center' }}>
-            <IconStack3 size={19} color="white" />
-          </Box>
-          <div style={{ lineHeight: 1.15 }}>
-            <Text fw={800} size="md" c="white" style={{ letterSpacing: '-0.01em' }}>NexusCRM</Text>
-            <Text size="xs" c="#6b7193" truncate maw={160}>{organization?.name}</Text>
+          <div style={{ lineHeight: 1.15, minWidth: 0 }}>
+            <BrandLogo height={24} onDark />
+            <Text size="xs" c="#6b7193" truncate maw={200} mt={4}>{organization?.name}</Text>
           </div>
         </Group>
 
