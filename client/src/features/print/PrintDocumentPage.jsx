@@ -70,7 +70,7 @@ export function PrintDocumentPage() {
 
   useEffect(() => {
     if (!doc) return undefined;
-    document.title = `${doc[cfg.numberKey]} — ${seller.billingProfile.legalName || seller.name || 'NexusCRM'}`;
+    document.title = `${doc[cfg.numberKey]} — ${seller.billingProfile.legalName || seller.name || 'Unizova CRM'}`;
     // Wait for the QR (if any) to render before opening the print dialog.
     if (waiting) return undefined;
     const t = setTimeout(() => window.print(), 700);

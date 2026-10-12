@@ -3,9 +3,9 @@
  * - Page navigations: network-first, falling back to the cached app shell when offline.
  * - API calls (<scope>api/*) and cross-origin requests are never cached: CRM data must stay live and private.
  */
-const VERSION = 'nexus-v2';
+const VERSION = 'nexus-v3';
 const SCOPE = new URL(self.registration.scope).pathname; // '/' or '/crm/'
-const SHELL = ['', 'manifest.webmanifest', 'favicon.svg', 'icon-192.png', 'icon-512.png'].map((p) => SCOPE + p);
+const SHELL = ['', 'manifest.webmanifest', 'favicon.png', 'icon-192.png', 'icon-512.png'].map((p) => SCOPE + p);
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(VERSION).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
