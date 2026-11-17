@@ -7,10 +7,12 @@ import { IconAlertCircle } from '@tabler/icons-react';
 import { AuthLayout } from './AuthLayout.jsx';
 import { authApi } from '../../api/authApi.js';
 import { useAuthStore } from '../../store/authStore.js';
+import { useBranding } from '../../branding/useBranding.js';
 
 export function SignupPage() {
   const navigate = useNavigate();
   const setSession = useAuthStore((s) => s.setSession);
+  const branding = useBranding();
 
   const form = useForm({
     initialValues: { organizationName: '', name: '', email: '', password: '' },
@@ -29,6 +31,21 @@ export function SignupPage() {
       navigate('/', { replace: true });
     },
   });
+
+  if (branding.loaded && !branding.allowPublicSignup) {
+    return (
+      <AuthLayout>
+        <Stack gap="sm">
+          <Title order={2}>Workspaces are set up for you</Title>
+          <Text c="dimmed" size="sm">
+            New workspaces on {branding.appName} are created by the platform administrator.
+            {branding.supportEmail ? ` Write to ${branding.supportEmail} to get started.` : ' Please contact your provider to get started.'}
+          </Text>
+          <Anchor component={Link} to="/login" size="sm">Back to log in</Anchor>
+        </Stack>
+      </AuthLayout>
+    );
+  }
 
   return (
     <AuthLayout>

@@ -15,7 +15,8 @@ export function initSocket(httpServer) {
     try {
       const payload = verifyAccessToken(socket.handshake.auth?.token);
       const user = await User.findById(payload.sub).select('organization isActive');
-      if (!user || !user.isActive) return next(new Error('Not authenticated'));
+      // Org-less core super admins have no workspace events to receive.
+      if (!user || !user.isActive || !user.organization) return next(new Error('Not authenticated'));
       socket.data.userId = String(user._id);
       socket.data.orgId = String(user.organization);
       return next();

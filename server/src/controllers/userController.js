@@ -1,5 +1,7 @@
 import bcrypt from 'bcryptjs';
 import User from '../models/User.js';
+import Organization from '../models/Organization.js';
+import { assertSeatAvailable } from '../services/planService.js';
 import { AppError } from '../utils/AppError.js';
 import { catchAsync } from '../utils/catchAsync.js';
 
@@ -15,6 +17,8 @@ export const addTeamMember = catchAsync(async (req, res) => {
   if (existing) {
     throw new AppError('A team member with this email already exists', 409);
   }
+
+  await assertSeatAvailable(await Organization.findById(req.tenantId));
 
   const passwordHash = await bcrypt.hash(password, 12);
   const user = await User.create({ organization: req.tenantId, name, email, passwordHash, role });
@@ -32,6 +36,11 @@ export const updateTeamMember = catchAsync(async (req, res) => {
 
   if (target.role === 'owner') {
     throw new AppError('The workspace owner cannot be modified here', 400);
+  }
+
+  // Re-activating a member takes a seat too.
+  if (req.body.isActive === true && !target.isActive) {
+    await assertSeatAvailable(await Organization.findById(req.tenantId));
   }
 
   Object.assign(target, req.body);

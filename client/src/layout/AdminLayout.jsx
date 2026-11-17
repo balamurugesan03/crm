@@ -9,8 +9,7 @@ import { useAuthStore } from '../store/authStore.js';
 import { authApi } from '../api/authApi.js';
 
 export function AdminLayout() {
-  const [opened, { toggle }] = useDisclosure(false);
-  const navigate = useNavigate();
+  const [opened, { toggle }] = useDisclosure(false);  const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
   const clearSession = useAuthStore((s) => s.clearSession);
 
@@ -52,7 +51,7 @@ export function AdminLayout() {
       </AppShell.Header>
 
       <AppShell.Navbar withBorder>
-        <AdminSidebar />
+        <AdminSidebar onNavigate={() => opened && toggle()} />
       </AppShell.Navbar>
 
       <AppShell.Main>

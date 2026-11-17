@@ -47,8 +47,13 @@ const organizationSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
     slug: { type: String, required: true, unique: true, lowercase: true, trim: true },
-    plan: { type: String, enum: ['trial', 'starter', 'pro', 'enterprise'], default: 'trial' },
-    subscriptionStatus: { type: String, enum: ['trialing', 'active', 'past_due', 'canceled'], default: 'trialing' },
+    // Key of a Plan document (managed by super admins in /admin/plans).
+    plan: { type: String, trim: true, lowercase: true, default: 'trial' },
+    // 'expired' blocks the workspace until a super admin records a new settlement.
+    subscriptionStatus: { type: String, enum: ['trialing', 'active', 'past_due', 'canceled', 'expired'], default: 'trialing' },
+    // Super-admin override of the plan's user limit (null = use the plan's limit, 0 = unlimited).
+    maxUsersOverride: { type: Number, min: 0, default: null },
+    createdByAdmin: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     isSuspended: { type: Boolean, default: false },
     stripeCustomerId: { type: String },
     stripeSubscriptionId: { type: String },

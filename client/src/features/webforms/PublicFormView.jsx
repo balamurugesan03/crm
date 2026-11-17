@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Stack, TextInput, Textarea, Button, Text, Title, Alert, ThemeIcon, Box } from '@mantine/core';
 import { IconCircleCheck } from '@tabler/icons-react';
 import { useT } from '../../i18n/index.js';
+import { useBranding } from '../../branding/useBranding.js';
 
 const INPUT_TYPE = { email: 'email', phone: 'tel' };
 
@@ -9,6 +10,7 @@ const INPUT_TYPE = { email: 'email', phone: 'tel' };
 export function PublicFormView({ form, onSubmit, submitting, error, done, successMessage, preview = false }) {
   const [values, setValues] = useState({});
   const t = useT();
+  const { appName } = useBranding();
   const accent = form.accentColor || '#4f4ff0';
 
   if (done) {
@@ -63,7 +65,7 @@ export function PublicFormView({ form, onSubmit, submitting, error, done, succes
         <Button type="submit" size="md" loading={submitting} mt="xs" style={{ background: accent }}>
           {form.submitLabel || 'Submit'}
         </Button>
-        <Text size="10px" c="dimmed" ta="center">{t('form.poweredBy', 'Powered by NexusCRM')}</Text>
+        <Text size="10px" c="dimmed" ta="center">{t('form.poweredBy', 'Powered by NexusCRM').replace('NexusCRM', appName)}</Text>
       </Stack>
     </form>
   );

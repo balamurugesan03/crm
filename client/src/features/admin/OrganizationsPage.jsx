@@ -1,5 +1,6 @@
-import { Text, ActionIcon, Menu, Badge, Group } from '@mantine/core';
-import { IconDotsVertical, IconEye, IconLockPause, IconLockOpen } from '@tabler/icons-react';
+import { useState } from 'react';
+import { Text, ActionIcon, Menu, Badge, Button } from '@mantine/core';
+import { IconDotsVertical, IconEye, IconLockPause, IconLockOpen, IconPlus } from '@tabler/icons-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { notifications } from '@mantine/notifications';
 import { useNavigate } from 'react-router-dom';
@@ -9,15 +10,14 @@ import { PageHeader } from '../../components/PageHeader.jsx';
 import { DataTable } from '../../components/DataTable.jsx';
 import { confirmDelete } from '../../components/confirmDelete.js';
 import { useResourceList } from '../../hooks/useResourceList.js';
-import { adminApi } from '../../api/adminApi.js';
-
-const PLAN_COLORS = { trial: 'gray', starter: 'blue', pro: 'indigo', enterprise: 'grape' };
-const STATUS_COLORS = { trialing: 'blue', active: 'teal', past_due: 'orange', canceled: 'red' };
+import { adminApi, STATUS_COLORS } from '../../api/adminApi.js';
+import { CreateOrganizationDrawer } from './CreateOrganizationDrawer.jsx';
 
 export function OrganizationsPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const list = useResourceList('admin-organizations', { list: adminApi.listOrganizations });
+  const [creating, setCreating] = useState(false);
 
   const suspendMutation = useMutation({
     mutationFn: ({ id, isSuspended }) => adminApi.updateOrganization(id, { isSuspended }),
@@ -36,7 +36,7 @@ export function OrganizationsPage() {
     {
       key: 'plan',
       header: 'Plan',
-      render: (row) => <Badge color={PLAN_COLORS[row.plan]} variant="light" tt="capitalize">{row.plan}</Badge>,
+      render: (row) => <Badge color="indigo" variant="light" tt="capitalize">{row.plan}</Badge>,
     },
     {
       key: 'subscriptionStatus',
@@ -47,6 +47,11 @@ export function OrganizationsPage() {
       key: 'isSuspended',
       header: '',
       render: (row) => (row.isSuspended ? <Badge color="red" variant="filled" size="sm">Suspended</Badge> : null),
+    },
+    {
+      key: 'currentPeriodEnd',
+      header: 'Valid until',
+      render: (row) => (row.currentPeriodEnd ? dayjs(row.currentPeriodEnd).format('DD MMM YYYY') : <Text size="sm" c="dimmed">No end date</Text>),
     },
     { key: 'createdAt', header: 'Joined', render: (row) => dayjs(row.createdAt).format('DD MMM YYYY') },
     {
@@ -96,7 +101,11 @@ export function OrganizationsPage() {
 
   return (
     <>
-      <PageHeader title="Organizations" subtitle="Every tenant workspace on the platform" />
+      <PageHeader
+        title="Organizations"
+        subtitle="Every tenant workspace on the platform"
+        action={<Button leftSection={<IconPlus size={16} />} onClick={() => setCreating(true)}>New organization</Button>}
+      />
 
       <DataTable
         columns={columns}
@@ -109,7 +118,13 @@ export function OrganizationsPage() {
         onPageChange={list.setPage}
         onRowClick={(row) => navigate(`/admin/organizations/${row._id}`)}
         emptyTitle="No organizations yet"
-        emptyDescription="Organizations will appear here as people sign up."
+        emptyDescription="Create an organization and hand its owner login to your client."
+      />
+
+      <CreateOrganizationDrawer
+        opened={creating}
+        onClose={() => setCreating(false)}
+        onCreated={(org) => navigate(`/admin/organizations/${org._id}`)}
       />
     </>
   );

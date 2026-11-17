@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import Organization from '../models/Organization.js';
 import User from '../models/User.js';
 import PipelineStage, { DEFAULT_STAGES } from '../models/PipelineStage.js';
+import PlatformSettings from '../models/PlatformSettings.js';
 import { AppError } from '../utils/AppError.js';
 import { catchAsync } from '../utils/catchAsync.js';
 import { slugify } from '../utils/slug.js';
@@ -13,7 +14,7 @@ import {
   refreshCookieOptions,
 } from '../utils/token.js';
 
-async function uniqueSlug(base) {
+export async function uniqueSlug(base) {
   const root = slugify(base) || 'org';
   let slug = root;
   let counter = 1;
@@ -26,6 +27,10 @@ async function uniqueSlug(base) {
 }
 
 export const signup = catchAsync(async (req, res) => {
+  const settings = await PlatformSettings.get();
+  if (!settings.allowPublicSignup) {
+    throw new AppError('New workspaces are created by the platform administrator. Please contact support.', 403);
+  }
   const { organizationName, name, email, password } = req.body;
 
   const existing = await User.findOne({ email });

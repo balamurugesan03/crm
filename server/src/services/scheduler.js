@@ -9,6 +9,18 @@ import { markOverdueInvoices, startOfToday } from './invoiceService.js';
 import { sendInvoiceReminder } from '../controllers/financeController.js';
 import Invoice from '../models/Invoice.js';
 import { isSmtpReady } from './messagingService.js';
+import { EXPIRY_GRACE_DAYS } from './planService.js';
+
+// Manually-settled subscriptions (no Stripe) whose paid period ended more than the grace window ago.
+export async function expireLapsedSubscriptions(now = new Date()) {
+  const cutoff = new Date(now.getTime() - EXPIRY_GRACE_DAYS * 86400000);
+  const result = await Organization.updateMany(
+    { subscriptionStatus: { $in: ['active', 'past_due'] }, currentPeriodEnd: { $ne: null, $lt: cutoff }, stripeSubscriptionId: { $in: [null, ''] } },
+    { subscriptionStatus: 'expired' },
+  );
+  if (result.modifiedCount) console.log(`[scheduler] expired ${result.modifiedCount} lapsed subscription(s)`);
+  return result.modifiedCount;
+}
 
 const DIGEST_HOUR = 9;
 const CHECK_EVERY_MS = 15 * 60 * 1000;
@@ -112,6 +124,7 @@ export function startScheduler() {
   if (timer) return;
   const tick = async () => {
     try {
+      await expireLapsedSubscriptions();
       await markOverdueInvoices();
       await sendDailyDigests();
       await sendAutoReminders();

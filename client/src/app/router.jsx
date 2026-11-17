@@ -41,6 +41,10 @@ const PrintDocumentPage = page(() => import('../features/print/PrintDocumentPage
 const AdminDashboardPage = page(() => import('../features/admin/AdminDashboardPage.jsx'), 'AdminDashboardPage');
 const OrganizationsPage = page(() => import('../features/admin/OrganizationsPage.jsx'), 'OrganizationsPage');
 const OrganizationDetailPage = page(() => import('../features/admin/OrganizationDetailPage.jsx'), 'OrganizationDetailPage');
+const PlansPage = page(() => import('../features/admin/PlansPage.jsx'), 'PlansPage');
+const SettlementsPage = page(() => import('../features/admin/SettlementsPage.jsx'), 'SettlementsPage');
+const BrandingPage = page(() => import('../features/admin/BrandingPage.jsx'), 'BrandingPage');
+const SuperAdminsPage = page(() => import('../features/admin/SuperAdminsPage.jsx'), 'SuperAdminsPage');
 const NotFoundPage = page(() => import('../features/NotFoundPage.jsx'), 'NotFoundPage');
 
 export function PageLoader() {
@@ -103,6 +107,10 @@ export function AppRouter() {
           <Route index element={<AdminDashboardPage />} />
           <Route path="organizations" element={<OrganizationsPage />} />
           <Route path="organizations/:id" element={<OrganizationDetailPage />} />
+          <Route path="plans" element={<PlansPage />} />
+          <Route path="settlements" element={<SettlementsPage />} />
+          <Route path="branding" element={<BrandingPage />} />
+          <Route path="super-admins" element={<SuperAdminsPage />} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />

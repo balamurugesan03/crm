@@ -8,7 +8,8 @@
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
     "seed": "node src/utils/seedDemo.js",
-    "promote-admin": "node src/utils/promoteSuperAdmin.js"
+    "promote-admin": "node src/utils/promoteSuperAdmin.js",
+    "create-super-admin": "node src/utils/createSuperAdmin.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.133.0",

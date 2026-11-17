@@ -6,13 +6,16 @@ import dayjs from 'dayjs';
 
 import { billingApi } from '../../api/billingApi.js';
 import { useAuthStore } from '../../store/authStore.js';
+import { useBranding } from '../../branding/useBranding.js';
 
-const STATUS_COLORS = { trialing: 'blue', active: 'teal', past_due: 'orange', canceled: 'red' };
+const STATUS_COLORS = { trialing: 'blue', active: 'teal', past_due: 'orange', canceled: 'red', expired: 'red' };
 
 export function BillingTab() {
   const organization = useAuthStore((s) => s.organization);
   const user = useAuthStore((s) => s.user);
   const canManage = user?.role === 'owner' || user?.role === 'admin';
+  const branding = useBranding();
+  const contact = branding.supportEmail || branding.companyName || 'your provider';
 
   const { data, isLoading } = useQuery({ queryKey: ['billing-plans'], queryFn: billingApi.getPlans });
 
@@ -45,16 +48,17 @@ export function BillingTab() {
           <div>
             <Text size="sm" c="dimmed">Current plan</Text>
             <Group gap={8} mt={4}>
-              <Text size="lg" fw={700} tt="capitalize">{organization?.plan}</Text>
+              <Text size="lg" fw={700} tt="capitalize">{data.currentPlan?.name || organization?.plan}</Text>
               <Badge color={STATUS_COLORS[organization?.subscriptionStatus]} variant="light" tt="capitalize">
                 {organization?.subscriptionStatus?.replace('_', ' ')}
               </Badge>
             </Group>
-            {organization?.currentPeriodEnd && (
-              <Text size="xs" c="dimmed" mt={4}>
-                Renews {dayjs(organization.currentPeriodEnd).format('DD MMM YYYY')}
-              </Text>
-            )}
+            <Text size="xs" c="dimmed" mt={4}>
+              {organization?.currentPeriodEnd
+                ? `Valid until ${dayjs(organization.currentPeriodEnd).format('DD MMM YYYY')}`
+                : organization?.subscriptionStatus === 'active' ? 'No expiry (lifetime)' : null}
+              {data.currentPlan ? ` · ${data.currentPlan.maxUsers ? `up to ${data.currentPlan.maxUsers} users` : 'unlimited users'}` : ''}
+            </Text>
           </div>
           {canManage && organization?.stripeCustomerId && (
             <Button
@@ -69,10 +73,9 @@ export function BillingTab() {
         </Group>
       </Paper>
 
-      {!data.configured && (
-        <Alert color="orange" variant="light" icon={<IconAlertCircle size={16} />} title="Billing isn't set up yet">
-          Add Stripe test API keys to <code>server/.env</code> (STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, and a price ID per
-          plan) to enable upgrades. See the README for the exact steps.
+      {!data.plans.some((p) => p.checkout) && (
+        <Alert color="blue" variant="light" icon={<IconAlertCircle size={16} />} title="Upgrades and renewals">
+          To change or renew your plan, contact {contact}{branding.supportPhone ? ` (${branding.supportPhone})` : ''}.
         </Alert>
       )}
 
@@ -95,11 +98,11 @@ export function BillingTab() {
                 <Button
                   mt="sm"
                   variant={isCurrent ? 'default' : 'filled'}
-                  disabled={isCurrent || !canManage || !data.configured}
+                  disabled={isCurrent || !canManage || !p.checkout}
                   loading={checkoutMutation.isPending}
                   onClick={() => checkoutMutation.mutate(p.plan)}
                 >
-                  {isCurrent ? 'Current plan' : 'Upgrade'}
+                  {isCurrent ? 'Current plan' : p.checkout ? 'Upgrade' : 'Contact to upgrade'}
                 </Button>
               </Stack>
             </Paper>

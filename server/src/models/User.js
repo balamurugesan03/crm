@@ -3,7 +3,15 @@ import bcrypt from 'bcryptjs';
 
 const userSchema = new mongoose.Schema(
   {
-    organization: { type: mongoose.Schema.Types.ObjectId, ref: 'Organization', required: true, index: true },
+    // Core platform super admins have no workspace; everyone else belongs to exactly one.
+    organization: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Organization',
+      index: true,
+      required() {
+        return !this.isSuperAdmin;
+      },
+    },
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, lowercase: true, trim: true },
     passwordHash: { type: String, required: true },

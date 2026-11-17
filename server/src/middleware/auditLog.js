@@ -11,7 +11,8 @@ export function auditLog(req, res, next) {
   if (!action) return next();
 
   res.on('finish', () => {
-    if (!req.user || res.statusCode >= 400) return;
+    // Org-less core super admins have no tenant audit trail to write to.
+    if (!req.user?.organization || res.statusCode >= 400) return;
     const segments = req.originalUrl.split('?')[0].split('/').filter(Boolean); // ['api', 'contacts', ':id', ...]
     if (!segments[1] || SKIP_RESOURCES.has(segments[1])) return;
 

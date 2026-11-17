@@ -1,21 +1,35 @@
 import { stripe } from '../config/stripe.js';
 import { env, isStripeConfigured } from '../config/env.js';
 import Organization from '../models/Organization.js';
+import Plan, { priceLabel } from '../models/Plan.js';
 import { AppError } from '../utils/AppError.js';
 import { catchAsync } from '../utils/catchAsync.js';
-
-export const PLAN_CATALOG = [
-  { plan: 'starter', name: 'Starter', priceLabel: '₹1,999/mo', features: ['Up to 5 team members', 'Core CRM + Sales tools'] },
-  { plan: 'pro', name: 'Pro', priceLabel: '₹4,999/mo', features: ['Up to 20 team members', 'Everything in Starter', 'Reports & Support desk'] },
-  { plan: 'enterprise', name: 'Enterprise', priceLabel: 'Contact us', features: ['Unlimited team members', 'Everything in Pro', 'Priority support'] },
-];
 
 function priceIdToPlan(priceId) {
   return Object.entries(env.stripePrices).find(([, id]) => id === priceId)?.[0];
 }
 
+// The catalogue is managed by super admins (/admin/plans). Free plans are not shown as upgrades.
 export const getPlans = catchAsync(async (req, res) => {
-  res.json({ configured: isStripeConfigured, plans: PLAN_CATALOG });
+  const organization = await Organization.findById(req.tenantId).select('plan');
+  const [plans, current] = await Promise.all([
+    Plan.find({ isActive: true, billingCycle: { $ne: 'free' } }).sort({ sortOrder: 1, createdAt: 1 }),
+    Plan.findOne({ key: organization?.plan }),
+  ]);
+  res.json({
+    configured: isStripeConfigured,
+    currentPlan: current ? { plan: current.key, name: current.name, billingCycle: current.billingCycle, maxUsers: current.maxUsers } : null,
+    plans: plans.map((p) => ({
+      plan: p.key,
+      name: p.name,
+      description: p.description,
+      billingCycle: p.billingCycle,
+      priceLabel: priceLabel(p),
+      features: p.features,
+      // Online checkout only exists for plans wired to a Stripe price.
+      checkout: Boolean(isStripeConfigured && env.stripePrices[p.key]),
+    })),
+  });
 });
 
 export const createCheckoutSession = catchAsync(async (req, res) => {

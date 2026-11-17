@@ -1,4 +1,5 @@
 import Deal from '../models/Deal.js';
+import Plan, { DEFAULT_PLANS } from '../models/Plan.js';
 
 // Idempotent data backfills run at startup.
 export async function runMigrations() {
@@ -9,4 +10,10 @@ export async function runMigrations() {
   ]);
   const n = closed.modifiedCount + touched.modifiedCount + staged.modifiedCount;
   if (n) console.log(`[migrations] backfilled ${n} deal fields`);
+
+  // Seed the plan catalogue once; afterwards super admins manage it in /admin/plans.
+  if (!(await Plan.estimatedDocumentCount())) {
+    await Plan.insertMany(DEFAULT_PLANS);
+    console.log(`[migrations] seeded ${DEFAULT_PLANS.length} default plans`);
+  }
 }

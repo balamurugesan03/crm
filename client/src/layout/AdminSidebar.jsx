@@ -1,16 +1,31 @@
 import { NavLink as RouterNavLink, useLocation, useNavigate } from 'react-router-dom';
 import { NavLink, Stack, Box, Group, Text } from '@mantine/core';
-import { IconShieldLock, IconLayoutDashboard, IconBuildingSkyscraper, IconArrowLeft } from '@tabler/icons-react';
+import {
+  IconShieldLock,
+  IconLayoutDashboard,
+  IconBuildingSkyscraper,
+  IconArrowLeft,
+  IconPackages,
+  IconReceipt2,
+  IconPalette,
+  IconUserShield,
+} from '@tabler/icons-react';
 import { BrandLogo } from '../components/BrandLogo.jsx';
+import { useAuthStore } from '../store/authStore.js';
 
 const ADMIN_NAV = [
   { label: 'Overview', to: '/admin', icon: IconLayoutDashboard },
   { label: 'Organizations', to: '/admin/organizations', icon: IconBuildingSkyscraper },
+  { label: 'Subscription plans', to: '/admin/plans', icon: IconPackages },
+  { label: 'Settlements', to: '/admin/settlements', icon: IconReceipt2 },
+  { label: 'Branding', to: '/admin/branding', icon: IconPalette },
+  { label: 'Super admins', to: '/admin/super-admins', icon: IconUserShield },
 ];
 
-export function AdminSidebar() {
+export function AdminSidebar({ onNavigate }) {
   const location = useLocation();
   const navigate = useNavigate();
+  const organization = useAuthStore((s) => s.organization);
 
   return (
     <Stack h="100%" justify="space-between" p="md" gap={0}>
@@ -19,7 +34,7 @@ export function AdminSidebar() {
           <BrandLogo height={26} />
           <Group gap={6}>
             <IconShieldLock size={14} />
-            <Text fw={700} size="sm" lh={1.1}>Platform Admin</Text>
+            <Text fw={700} size="sm" lh={1.1}>Super Admin</Text>
           </Group>
         </Stack>
 
@@ -36,6 +51,7 @@ export function AdminSidebar() {
                 active={active}
                 variant="filled"
                 color="dark"
+                onClick={onNavigate}
                 styles={{ root: { borderRadius: 8 } }}
               />
             );
@@ -43,12 +59,15 @@ export function AdminSidebar() {
         </Stack>
       </Box>
 
-      <NavLink
-        label="Back to my workspace"
-        leftSection={<IconArrowLeft size={18} stroke={1.75} />}
-        onClick={() => navigate('/')}
-        styles={{ root: { borderRadius: 8 } }}
-      />
+      {/* Only super admins who also belong to a workspace have one to go back to. */}
+      {organization && (
+        <NavLink
+          label="Back to my workspace"
+          leftSection={<IconArrowLeft size={18} stroke={1.75} />}
+          onClick={() => navigate('/')}
+          styles={{ root: { borderRadius: 8 } }}
+        />
+      )}
     </Stack>
   );
 }

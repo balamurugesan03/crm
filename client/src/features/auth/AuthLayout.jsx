@@ -1,5 +1,6 @@
 import { Box, Flex, Stack, Text, Title, Group, Paper, SimpleGrid, ThemeIcon } from '@mantine/core';
 import { BrandLogo } from '../../components/BrandLogo.jsx';
+import { useBranding } from '../../branding/useBranding.js';
 import { IconBolt, IconChartArrowsVertical, IconCalendarEvent, IconShieldCheck } from '@tabler/icons-react';
 
 const FEATURES = [
@@ -10,6 +11,7 @@ const FEATURES = [
 ];
 
 export function AuthLayout({ children }) {
+  const branding = useBranding();
   return (
     <Flex mih="100vh" style={{ background: 'var(--app-bg)' }}>
       <Flex
@@ -23,7 +25,7 @@ export function AuthLayout({ children }) {
           position: 'relative',
           overflow: 'hidden',
           color: 'white',
-          background: 'radial-gradient(1200px 600px at -10% -10%, #5f62f5 0%, transparent 55%), radial-gradient(900px 500px at 120% 110%, #a855f7 0%, transparent 50%), #0f1222',
+          background: 'radial-gradient(1200px 600px at -10% -10%, var(--brand-glow, #5f62f5) 0%, transparent 55%), radial-gradient(900px 500px at 120% 110%, #a855f7 0%, transparent 50%), #0f1222',
         }}
       >
         <Group gap={10}>
@@ -35,7 +37,7 @@ export function AuthLayout({ children }) {
             <Title order={1} fz={38} fw={800} lh={1.15} style={{ letterSpacing: '-0.03em' }}>
               Close more deals with a CRM your team will actually use.
             </Title>
-            <Text c="#b4b9d6" mt="md" size="lg">Sales, support and marketing — one fast, beautiful workspace.</Text>
+            <Text c="#b4b9d6" mt="md" size="lg">{branding.tagline}</Text>
           </div>
 
           <SimpleGrid cols={2} spacing="md">
@@ -55,7 +57,7 @@ export function AuthLayout({ children }) {
           </SimpleGrid>
         </Stack>
 
-        <Text size="xs" c="#6b7193">© {new Date().getFullYear()} Unizova Technologies. All rights reserved.</Text>
+        <Text size="xs" c="#6b7193">© {new Date().getFullYear()} {branding.companyName || branding.appName}. All rights reserved.</Text>
       </Flex>
 
       <Flex flex={1} align="center" justify="center" p="xl">

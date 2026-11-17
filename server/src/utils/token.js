@@ -3,7 +3,8 @@ import { env } from '../config/env.js';
 
 export function signAccessToken(user) {
   return jwt.sign(
-    { sub: user._id.toString(), organization: user.organization.toString(), role: user.role },
+    // Core super admins have no organization.
+    { sub: user._id.toString(), organization: user.organization ? user.organization.toString() : null, role: user.role },
     env.jwtAccessSecret,
     { expiresIn: env.jwtAccessExpires },
   );

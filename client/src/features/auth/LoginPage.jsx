@@ -7,11 +7,13 @@ import { IconAlertCircle } from '@tabler/icons-react';
 import { AuthLayout } from './AuthLayout.jsx';
 import { authApi } from '../../api/authApi.js';
 import { useAuthStore } from '../../store/authStore.js';
+import { useBranding } from '../../branding/useBranding.js';
 
 export function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const setSession = useAuthStore((s) => s.setSession);
+  const branding = useBranding();
 
   const form = useForm({
     initialValues: { email: '', password: '' },
@@ -25,7 +27,8 @@ export function LoginPage() {
     mutationFn: authApi.login,
     onSuccess: (data) => {
       setSession(data);
-      navigate(location.state?.from?.pathname || '/', { replace: true });
+      const home = data.user?.isSuperAdmin && !data.organization ? '/admin' : '/';
+      navigate(location.state?.from?.pathname || home, { replace: true });
     },
   });
 
@@ -63,10 +66,16 @@ export function LoginPage() {
         </form>
       </Paper>
 
-      <Text size="sm" c="dimmed" ta="center" mt="md">
-        Don't have a workspace?{' '}
-        <Anchor component={Link} to="/signup">Create one</Anchor>
-      </Text>
+      {branding.allowPublicSignup ? (
+        <Text size="sm" c="dimmed" ta="center" mt="md">
+          Don't have a workspace?{' '}
+          <Anchor component={Link} to="/signup">Create one</Anchor>
+        </Text>
+      ) : (
+        <Text size="sm" c="dimmed" ta="center" mt="md">
+          Need a workspace? Contact {branding.supportEmail || branding.companyName || 'your provider'}.
+        </Text>
+      )}
     </AuthLayout>
   );
 }

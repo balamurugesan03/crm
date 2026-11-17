@@ -53,7 +53,13 @@ Re-running the seed wipes and recreates only the demo org.
 - Company detail page (linked Contacts/Deals tabs, activity timeline, notes) — parity with Contact detail page
 - Deal drawer Activity tab (notes + timeline, reusing the same pattern as Contacts/Companies)
 - Support/Marketing: Tickets (status/priority, activity timeline + notes), Campaigns (list + detail showing associated leads, lead-to-campaign linking)
-- Platform Super Admin: separate `/admin` area for the SaaS owner — platform-wide stats (orgs, users, revenue, signup trend, plan breakdown), list of every tenant organization, org detail (users, plan, revenue), suspend/reactivate an organization (blocks login for that org's users immediately)
+- Platform Super Admin (`/admin`) for the SaaS owner:
+  - **Organizations**: super admin creates each workspace with its owner login (public sign-up is off by default), sees users, suspends/reactivates, resets passwords, sets the plan, status, valid-until date and a per-org user-limit override
+  - **Subscription plans**: create/edit plans billed free, monthly, quarterly, yearly or **one-time (lifetime settlement)**, with price, max users and feature list. Seeded with Trial/Starter/Pro/Enterprise on first start
+  - **Settlements**: record each payment (amount, UPI/bank/cash/cheque/card, reference, date). Recurring plans get one cycle added (renewals extend the current period). One-time plans never expire. Workspaces whose period ended 3+ days ago are marked *expired* and locked until renewed
+  - **Branding**: app name, company name, tagline, primary theme colour, light/dark logo and favicon, support email/phone, public sign-up toggle. Applies to every workspace, the login page and public forms
+  - **Super admins**: add/disable other core super admins
+  - Overview: stats, subscription revenue, signup trend, plan breakdown, renewals due
 - Billing: Stripe Checkout (subscription upgrade per plan), Stripe Customer Portal (self-serve plan/payment management), webhook-driven sync (`checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`) that keeps `Organization.plan` / `subscriptionStatus` / `currentPeriodEnd` in sync automatically. Fully built and wired end-to-end, but **inactive until Stripe keys are added** — see below.
 - Global search: `Ctrl/Cmd+K` or the header search box searches Contacts, Companies, Leads, Deals and Tickets by name/title, grouped results, jump straight to a record.
 - In-app notifications: bell icon with unread badge in the header, polls every 30s. Triggers today: task assigned to you, ticket assigned to you (by someone other than yourself). Click a notification to mark it read and jump to the relevant page.
@@ -99,12 +105,14 @@ Re-running the seed wipes and recreates only the demo org.
 - **GST returns** (`/gst-returns`) — GSTR-1 for any month: B2B, B2C Large (inter-state unregistered > ₹1 lakh), B2C Small (by state + rate) and HSN summary, with CSV downloads in the GST offline-tool column layout. Warns when your GSTIN or HSN codes are missing. Review with your tax consultant before filing.
 
 ## Platform admin access
-Super admin is a flag on a `User` (`isSuperAdmin`), independent of their org role. There's no public signup path for it — promote an existing user from the CLI:
+A **core super admin** is a user with `isSuperAdmin` and no workspace. They log straight into `/admin`. Create the first one from the CLI:
 ```bash
 cd server
-npm run promote-admin -- someone@example.com
+npm run create-super-admin -- admin@yourcompany.com 'StrongPassword123' Your Name
 ```
-That user will see a "Platform admin" item in their account menu after logging in, linking to `/admin`.
+Running it again with an existing email resets that account's password and makes it super admin. More super admins can then be added from **Admin → Super admins**.
+
+You can still promote an existing workspace user (`npm run promote-admin -- someone@example.com`). They keep their workspace and get a "Platform admin" item in the account menu.
 
 ## Enabling Billing (Stripe)
 The Billing tab (Settings → Billing) works today in a safe "not configured" state: plan cards render, but Upgrade/Manage billing buttons are disabled with an explanatory banner. To make it live:

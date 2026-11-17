@@ -12,6 +12,7 @@ import dayjs from 'dayjs';
 import { DocumentSheet, useUpiQr } from '../print/PrintDocumentPage.jsx';
 import { formatCurrency } from '../../theme/theme.js';
 import { useT, useLangStore, LANGUAGES } from '../../i18n/index.js';
+import { useBranding } from '../../branding/useBranding.js';
 import { SegmentedControl } from '@mantine/core';
 import { API_BASE } from '../../utils/paths.js';
 
@@ -223,6 +224,7 @@ function DocsTab({ client, type }) {
 
 export function PortalPage() {
   const t = useT();
+  const { appName } = useBranding();
   const lang = useLangStore((s) => s.lang);
   const setLang = useLangStore((s) => s.setLang);
   const { token, client } = usePortalClient();
@@ -276,7 +278,7 @@ export function PortalPage() {
           </Tabs>
         </Paper>
         <Text size="xs" c="dimmed" ta="center" mt="md">
-          {t('portal.needHelp', 'Need help?')} {me.organization.email && <>Email {me.organization.email}</>}{me.organization.phone && <> · Call {me.organization.phone}</>} · Powered by NexusCRM
+          {t('portal.needHelp', 'Need help?')} {me.organization.email && <>Email {me.organization.email}</>}{me.organization.phone && <> · Call {me.organization.phone}</>} · Powered by {appName}
         </Text>
       </Container>
     </Box>
