@@ -23,10 +23,11 @@ fi
 ENV_BACKUP=""
 if [ -f "$APP_DIR/server/.env" ]; then ENV_BACKUP=$(mktemp); cp "$APP_DIR/server/.env" "$ENV_BACKUP"; fi
 
-rm -rf "$APP_DIR/server/src" "$APP_DIR/client" "$APP_DIR/deploy"
+rm -rf "$APP_DIR/server/src" "$APP_DIR/client" "$APP_DIR/superadmin" "$APP_DIR/deploy"
 mkdir -p "$APP_DIR/server"
 cp -a "$SRC/server/." "$APP_DIR/server/"
 cp -a "$SRC/client" "$APP_DIR/client"
+[ -d "$SRC/superadmin" ] && cp -a "$SRC/superadmin" "$APP_DIR/superadmin"
 cp -a "$SRC/deploy" "$APP_DIR/deploy"
 cp -a "$SRC/README.md" "$APP_DIR/" 2>/dev/null || true
 if [ -n "$ENV_BACKUP" ]; then cp "$ENV_BACKUP" "$APP_DIR/server/.env"; rm -f "$ENV_BACKUP"; fi

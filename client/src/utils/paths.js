@@ -9,3 +9,6 @@ export const API_BASE = appPath('/api');
 
 // Absolute URL to share outside the app (embed codes, public links).
 export const absoluteUrl = (p) => `${window.location.origin}${appPath(p)}`;
+
+// The Super Admin console is a separate app (crm/superadmin), served on its own URL.
+export const ADMIN_CONSOLE_URL = import.meta.env.VITE_ADMIN_URL || 'http://localhost:5731/';

@@ -8,11 +8,11 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { notifications } from '@mantine/notifications';
 import { IconPlus, IconDotsVertical, IconPencil, IconTrash, IconCheck } from '@tabler/icons-react';
 
-import { PageHeader } from '../../components/PageHeader.jsx';
-import { FormDrawer } from '../../components/FormDrawer.jsx';
-import { EmptyState } from '../../components/EmptyState.jsx';
-import { confirmDelete } from '../../components/confirmDelete.js';
-import { adminApi, BILLING_CYCLE_LABELS, apiError } from '../../api/adminApi.js';
+import { PageHeader } from '../components/PageHeader.jsx';
+import { FormDrawer } from '../components/FormDrawer.jsx';
+import { EmptyState } from '../components/EmptyState.jsx';
+import { confirmDelete } from '../components/confirmDelete.js';
+import { adminApi, BILLING_CYCLE_LABELS, apiError } from '../api/adminApi.js';
 
 const CYCLE_OPTIONS = Object.entries(BILLING_CYCLE_LABELS).map(([value, label]) => ({ value, label }));
 const CYCLE_COLORS = { free: 'gray', monthly: 'blue', quarterly: 'cyan', yearly: 'indigo', one_time: 'grape' };

@@ -6,11 +6,11 @@ import { notifications } from '@mantine/notifications';
 import { IconPlus, IconDotsVertical, IconUserOff, IconUserCheck, IconKey } from '@tabler/icons-react';
 import dayjs from 'dayjs';
 
-import { PageHeader } from '../../components/PageHeader.jsx';
-import { FormDrawer } from '../../components/FormDrawer.jsx';
-import { confirmDelete } from '../../components/confirmDelete.js';
-import { adminApi, apiError } from '../../api/adminApi.js';
-import { useAuthStore } from '../../store/authStore.js';
+import { PageHeader } from '../components/PageHeader.jsx';
+import { FormDrawer } from '../components/FormDrawer.jsx';
+import { confirmDelete } from '../components/confirmDelete.js';
+import { adminApi, apiError } from '../api/adminApi.js';
+import { useAuthStore } from '../store/authStore.js';
 
 function CreateAdminDrawer({ opened, onClose }) {
   const queryClient = useQueryClient();

@@ -7,10 +7,10 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { notifications } from '@mantine/notifications';
 import { IconUpload, IconRestore } from '@tabler/icons-react';
 
-import { PageHeader } from '../../components/PageHeader.jsx';
-import { adminApi, apiError } from '../../api/adminApi.js';
-import { API_BASE, appPath } from '../../utils/paths.js';
-import { paletteFromHex } from '../../branding/useBranding.js';
+import { PageHeader } from '../components/PageHeader.jsx';
+import { adminApi, apiError } from '../api/adminApi.js';
+import { API_BASE, appPath } from '../utils/paths.js';
+import { paletteFromHex } from '../branding/useBranding.js';
 
 const MAX_BYTES = 1024 * 1024;
 const ACCEPT = 'image/png,image/jpeg,image/webp,image/x-icon';

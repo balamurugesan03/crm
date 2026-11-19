@@ -133,13 +133,13 @@ sudo ufw allow OpenSSH && sudo ufw allow 'Nginx Full' && sudo ufw enable
 curl -s https://unizova.com/crm/api/health      # {"status":"ok","db":"up",...}
 ```
 
-Create the core super admin. It has no workspace and logs straight into `/crm/admin`:
+Create the core super admin. Either set `SUPER_ADMIN_EMAIL` / `SUPER_ADMIN_PASSWORD` in `.env` before the first start (the server creates it automatically when none exists), or use the CLI. It has no workspace and signs in at the separate Super Admin console, **https://unizova.com/crm/admin/**:
 
 ```bash
 cd /var/www/nexuscrm/server && NODE_ENV=production node src/utils/createSuperAdmin.js admin@yourcompany.com 'StrongPassword123' Your Name
 ```
 
-Log in at **https://unizova.com/crm/**. In the admin panel: set **Branding** (name, logo, colour), review **Subscription plans**, then use **Organizations → New organization** to create each client workspace and its owner login. Public sign-up is off by default; turn it on under Branding → Access if you want self-serve trials.
+Log in at **https://unizova.com/crm/admin/**. In the admin panel: set **Branding** (name, logo, colour), review **Subscription plans**, then use **Organizations → New organization** to create each client workspace and its owner login. Public sign-up is off by default; turn it on under Branding → Access if you want self-serve trials.
 
 Checklist after first login:
 - Settings → Organization: business name, **GSTIN**, address, **UPI ID**, bank details

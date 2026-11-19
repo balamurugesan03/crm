@@ -35,3 +35,10 @@ export function refreshCookieOptions() {
     maxAge: 7 * 24 * 60 * 60 * 1000,
   };
 }
+
+// The super admin console is a separate app with its own session, so it never shares a cookie with the workspace app.
+export const ADMIN_REFRESH_COOKIE_NAME = 'crm_admin_refresh';
+
+export function adminRefreshCookieOptions() {
+  return { ...refreshCookieOptions(), path: `${env.basePath}/api/auth/admin` };
+}

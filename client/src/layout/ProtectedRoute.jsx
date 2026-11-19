@@ -4,6 +4,7 @@ import { IconLock } from '@tabler/icons-react';
 import { useAuthStore } from '../store/authStore.js';
 import { authApi } from '../api/authApi.js';
 import { useBranding } from '../branding/useBranding.js';
+import { ADMIN_CONSOLE_URL } from '../utils/paths.js';
 
 function WorkspaceLocked({ organization }) {
   const branding = useBranding();
@@ -37,7 +38,8 @@ export function ProtectedRoute({ children }) {
   }
   // Core super admins have no workspace of their own.
   if (user?.isSuperAdmin && !organization) {
-    return <Navigate to="/admin" replace />;
+    window.location.replace(ADMIN_CONSOLE_URL);
+    return null;
   }
   if (!user?.isSuperAdmin && organization?.subscriptionStatus === 'expired') {
     return <WorkspaceLocked organization={organization} />;

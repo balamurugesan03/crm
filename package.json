@@ -4,10 +4,11 @@
   "private": true,
   "description": "Multi-tenant SaaS CRM - React/Vite/Mantine + Node/Express/MongoDB",
   "scripts": {
-    "dev": "concurrently -n SERVER,CLIENT -c blue,green \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
-    "install:all": "npm install --prefix server && npm install --prefix client",
+    "dev": "concurrently -n SERVER,CLIENT,ADMIN -c blue,green,magenta \"npm run dev --prefix server\" \"npm run dev --prefix client\" \"npm run dev --prefix superadmin\"",
+    "dev:admin": "npm run dev --prefix superadmin",
+    "install:all": "npm install --prefix server && npm install --prefix client && npm install --prefix superadmin",
     "seed": "npm run seed --prefix server",
-    "build": "npm run build --prefix client",
+    "build": "npm run build --prefix client && npm run build --prefix superadmin",
     "release": "node deploy/package-release.mjs"
   },
   "devDependencies": {

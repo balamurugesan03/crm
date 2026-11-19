@@ -15,6 +15,7 @@ import { GlobalSearch } from '../features/search/GlobalSearch.jsx';
 import { NotificationBell } from '../features/notifications/NotificationBell.jsx';
 import { CopilotDrawer } from '../features/ai/CopilotDrawer.jsx';
 import { navSections, bottomNavItems } from './navItems.js';
+import { ADMIN_CONSOLE_URL } from '../utils/paths.js';
 import { useT, useLangStore, LANGUAGES } from '../i18n/index.js';
 
 const QUICK_CREATE = [
@@ -154,7 +155,7 @@ export function Header({ opened, toggle }) {
               </Menu.Item>
             ))}
             {user?.isSuperAdmin && (
-              <Menu.Item leftSection={<IconShieldLock size={16} />} onClick={() => navigate('/admin')}>
+              <Menu.Item leftSection={<IconShieldLock size={16} />} component="a" href={ADMIN_CONSOLE_URL}>
                 {t('header.platformAdmin', 'Platform admin')}
               </Menu.Item>
             )}

@@ -68,7 +68,7 @@ app.use(compression({ filter: (req, res) => !req.path.startsWith('/api/ai/chat')
 if (env.nodeEnv !== 'test') app.use(morgan('dev'));
 
 app.use('/api', rateLimit({ windowMs: 60 * 1000, limit: 600, standardHeaders: 'draft-7', legacyHeaders: false }));
-app.use('/api/auth/login', rateLimit({ windowMs: 15 * 60 * 1000, limit: 20, standardHeaders: 'draft-7', legacyHeaders: false, message: { message: 'Too many login attempts, please try again later' } }));
+app.use(['/api/auth/login', '/api/auth/admin/login'], rateLimit({ windowMs: 15 * 60 * 1000, limit: 20, standardHeaders: 'draft-7', legacyHeaders: false, message: { message: 'Too many login attempts, please try again later' } }));
 app.use('/api', auditLog);
 
 app.get('/api/health', (req, res) => {

@@ -1,7 +1,7 @@
 import { Stack, Group, NumberInput, Select, TextInput, Textarea, Text } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import dayjs from 'dayjs';
-import { PAYMENT_MODE_OPTIONS } from '../../api/adminApi.js';
+import { PAYMENT_MODE_OPTIONS } from '../api/adminApi.js';
 
 export const EMPTY_SETTLEMENT = { amount: 0, paymentMode: 'bank_transfer', reference: '', paidAt: new Date(), periodEnd: null, notes: '' };
 

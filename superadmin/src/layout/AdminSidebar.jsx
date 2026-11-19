@@ -1,4 +1,4 @@
-import { NavLink as RouterNavLink, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink as RouterNavLink, useLocation } from 'react-router-dom';
 import { NavLink, Stack, Box, Group, Text } from '@mantine/core';
 import {
   IconShieldLock,
@@ -12,19 +12,19 @@ import {
 } from '@tabler/icons-react';
 import { BrandLogo } from '../components/BrandLogo.jsx';
 import { useAuthStore } from '../store/authStore.js';
+import { WORKSPACE_URL } from '../utils/paths.js';
 
 const ADMIN_NAV = [
-  { label: 'Overview', to: '/admin', icon: IconLayoutDashboard },
-  { label: 'Organizations', to: '/admin/organizations', icon: IconBuildingSkyscraper },
-  { label: 'Subscription plans', to: '/admin/plans', icon: IconPackages },
-  { label: 'Settlements', to: '/admin/settlements', icon: IconReceipt2 },
-  { label: 'Branding', to: '/admin/branding', icon: IconPalette },
-  { label: 'Super admins', to: '/admin/super-admins', icon: IconUserShield },
+  { label: 'Overview', to: '/', icon: IconLayoutDashboard },
+  { label: 'Organizations', to: '/organizations', icon: IconBuildingSkyscraper },
+  { label: 'Subscription plans', to: '/plans', icon: IconPackages },
+  { label: 'Settlements', to: '/settlements', icon: IconReceipt2 },
+  { label: 'Branding', to: '/branding', icon: IconPalette },
+  { label: 'Super admins', to: '/super-admins', icon: IconUserShield },
 ];
 
 export function AdminSidebar({ onNavigate }) {
   const location = useLocation();
-  const navigate = useNavigate();
   const organization = useAuthStore((s) => s.organization);
 
   return (
@@ -40,7 +40,7 @@ export function AdminSidebar({ onNavigate }) {
 
         <Stack gap={4}>
           {ADMIN_NAV.map((item) => {
-            const active = item.to === '/admin' ? location.pathname === '/admin' : location.pathname.startsWith(item.to);
+            const active = item.to === '/' ? location.pathname === '/' : location.pathname.startsWith(item.to);
             return (
               <NavLink
                 key={item.to}
@@ -64,7 +64,8 @@ export function AdminSidebar({ onNavigate }) {
         <NavLink
           label="Back to my workspace"
           leftSection={<IconArrowLeft size={18} stroke={1.75} />}
-          onClick={() => navigate('/')}
+          component="a"
+          href={WORKSPACE_URL}
           styles={{ root: { borderRadius: 8 } }}
         />
       )}

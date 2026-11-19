@@ -12,6 +12,8 @@ const run = (cmd, cwd = root) => execSync(cmd, { cwd, stdio: 'inherit' });
 
 console.log('> Building client (base /crm/) ...');
 run('npm run build', path.join(root, 'client'));
+console.log('> Building super admin console (base /crm/admin/) ...');
+run('npm run build', path.join(root, 'superadmin'));
 
 const stamp = new Date().toISOString().replace(/[-:T]/g, '').slice(0, 12);
 const outDir = path.join(root, 'release');
@@ -28,6 +30,7 @@ copy('server/package.json');
 copy('server/package-lock.json');
 copy('server/.env.production.example');
 copy('client/dist', 'client');
+copy('superadmin/dist', 'superadmin');
 copy('deploy');
 copy('README.md');
 

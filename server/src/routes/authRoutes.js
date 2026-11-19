@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
-import { signup, login, refresh, logout, me } from '../controllers/authController.js';
+import { signup, login, adminLogin, adminRefresh, adminLogout, refresh, logout, me } from '../controllers/authController.js';
 import { validate } from '../middleware/validate.js';
 import { signupSchema, loginSchema } from '../validators/authValidators.js';
 import { requireAuth } from '../middleware/auth.js';
@@ -16,6 +16,9 @@ const authLimiter = rateLimit({
 
 router.post('/signup', authLimiter, validate(signupSchema), signup);
 router.post('/login', authLimiter, validate(loginSchema), login);
+router.post('/admin/login', authLimiter, validate(loginSchema), adminLogin);
+router.post('/admin/refresh', adminRefresh);
+router.post('/admin/logout', adminLogout);
 router.post('/refresh', refresh);
 router.post('/logout', logout);
 router.get('/me', requireAuth, me);

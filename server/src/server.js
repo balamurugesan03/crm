@@ -7,12 +7,14 @@ import { initSocket } from './realtime/socket.js';
 import { registerAutomationListeners } from './services/automationService.js';
 import { runMigrations } from './utils/migrations.js';
 import { startScheduler } from './services/scheduler.js';
+import { ensureDefaultSuperAdmin } from './utils/defaultSuperAdmin.js';
 
 async function start() {
   assertProductionConfig();
   try {
     await connectDB();
     await runMigrations();
+    await ensureDefaultSuperAdmin();
     const server = http.createServer(app);
     initSocket(server);
     registerAutomationListeners();

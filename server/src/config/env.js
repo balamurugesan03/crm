@@ -17,7 +17,8 @@ export const env = {
   // Full public URL of the app, including any sub-path: https://unizova.com/crm
   clientUrl,
   // Browsers send Origin as scheme + host only, so CORS must compare against that.
-  corsOrigin: new URL(clientUrl).origin,
+  // The Super Admin console (crm/superadmin) may live on its own origin; ADMIN_URL adds it to CORS.
+  corsOrigin: [...new Set([clientUrl, process.env.ADMIN_URL || (process.env.NODE_ENV === 'production' ? clientUrl : 'http://localhost:5731')].map((u) => new URL(u).origin))],
   // Public sub-path the API sits under ('' or '/crm'); cookie paths must match what the browser sees.
   basePath: new URL(clientUrl).pathname.replace(/\/$/, ''),
   // Number of reverse proxies in front of Node (Nginx = 1) so req.ip / rate limits use the real client IP.

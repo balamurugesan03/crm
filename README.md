@@ -53,7 +53,7 @@ Re-running the seed wipes and recreates only the demo org.
 - Company detail page (linked Contacts/Deals tabs, activity timeline, notes) — parity with Contact detail page
 - Deal drawer Activity tab (notes + timeline, reusing the same pattern as Contacts/Companies)
 - Support/Marketing: Tickets (status/priority, activity timeline + notes), Campaigns (list + detail showing associated leads, lead-to-campaign linking)
-- Platform Super Admin (`/admin`) for the SaaS owner:
+- Platform Super Admin — a **separate app** in `superadmin/` (own login, own session) for the SaaS owner:
   - **Organizations**: super admin creates each workspace with its owner login (public sign-up is off by default), sees users, suspends/reactivates, resets passwords, sets the plan, status, valid-until date and a per-org user-limit override
   - **Subscription plans**: create/edit plans billed free, monthly, quarterly, yearly or **one-time (lifetime settlement)**, with price, max users and feature list. Seeded with Trial/Starter/Pro/Enterprise on first start
   - **Settlements**: record each payment (amount, UPI/bank/cash/cheque/card, reference, date). Recurring plans get one cycle added (renewals extend the current period). One-time plans never expire. Workspaces whose period ended 3+ days ago are marked *expired* and locked until renewed
@@ -105,7 +105,18 @@ Re-running the seed wipes and recreates only the demo org.
 - **GST returns** (`/gst-returns`) — GSTR-1 for any month: B2B, B2C Large (inter-state unregistered > ₹1 lakh), B2C Small (by state + rate) and HSN summary, with CSV downloads in the GST offline-tool column layout. Warns when your GSTIN or HSN codes are missing. Review with your tax consultant before filing.
 
 ## Platform admin access
-A **core super admin** is a user with `isSuperAdmin` and no workspace. They log straight into `/admin`. Create the first one from the CLI:
+The super admin console is a **separate app** in its own top-level folder, `superadmin/` (next to `client/` and `server/`), with its own `package.json`, Vite config, login page and session. It runs on **http://localhost:5731** in dev (`npm run dev` starts all three, or `npm run dev:admin`) and is served at **https://unizova.com/crm/admin/** in production. It signs in through `POST /api/auth/admin/login` (super admin accounts only) and keeps its own refresh cookie (`crm_admin_refresh`), so it never shares a session with the workspace app. Core super admins cannot sign in from the workspace `/login` page.
+
+**Default credentials** — on first start, if no super admin exists, the server creates one:
+
+| | Development default | Override in `server/.env` |
+|---|---|---|
+| Email | `superadmin@nexuscrm.io` | `SUPER_ADMIN_EMAIL` |
+| Password | `SuperAdmin@123` | `SUPER_ADMIN_PASSWORD` |
+
+Open http://localhost:5731/login and change the password after signing in. In production there is no default password: set `SUPER_ADMIN_EMAIL` and `SUPER_ADMIN_PASSWORD` before the first start (or use the CLI below).
+
+A **core super admin** is a user with `isSuperAdmin` and no workspace. You can also create or reset one from the CLI:
 ```bash
 cd server
 npm run create-super-admin -- admin@yourcompany.com 'StrongPassword123' Your Name

@@ -13,8 +13,8 @@ import {
 import { notifications } from '@mantine/notifications';
 import dayjs from 'dayjs';
 
-import { adminApi, STATUS_COLORS, PAYMENT_MODE_OPTIONS, BILLING_CYCLE_LABELS, formatINR, apiError } from '../../api/adminApi.js';
-import { confirmDelete } from '../../components/confirmDelete.js';
+import { adminApi, STATUS_COLORS, PAYMENT_MODE_OPTIONS, BILLING_CYCLE_LABELS, formatINR, apiError } from '../api/adminApi.js';
+import { confirmDelete } from '../components/confirmDelete.js';
 import { SettlementFields, EMPTY_SETTLEMENT, settlementPayload } from './SettlementFields.jsx';
 
 const STATUS_OPTIONS = [
@@ -140,7 +140,7 @@ export function OrganizationDetailPage() {
 
   return (
     <Stack gap="lg">
-      <Anchor component={Link} to="/admin/organizations" size="sm" c="dimmed">
+      <Anchor component={Link} to="/organizations" size="sm" c="dimmed">
         <Group gap={4}><IconArrowLeft size={14} /> Back to organizations</Group>
       </Anchor>
 

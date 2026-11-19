@@ -6,11 +6,11 @@ import { notifications } from '@mantine/notifications';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 
-import { PageHeader } from '../../components/PageHeader.jsx';
-import { DataTable } from '../../components/DataTable.jsx';
-import { confirmDelete } from '../../components/confirmDelete.js';
-import { useResourceList } from '../../hooks/useResourceList.js';
-import { adminApi, STATUS_COLORS } from '../../api/adminApi.js';
+import { PageHeader } from '../components/PageHeader.jsx';
+import { DataTable } from '../components/DataTable.jsx';
+import { confirmDelete } from '../components/confirmDelete.js';
+import { useResourceList } from '../hooks/useResourceList.js';
+import { adminApi, STATUS_COLORS } from '../api/adminApi.js';
 import { CreateOrganizationDrawer } from './CreateOrganizationDrawer.jsx';
 
 export function OrganizationsPage() {
@@ -65,7 +65,7 @@ export function OrganizationsPage() {
             </ActionIcon>
           </Menu.Target>
           <Menu.Dropdown>
-            <Menu.Item leftSection={<IconEye size={14} />} onClick={(e) => { e.stopPropagation(); navigate(`/admin/organizations/${row._id}`); }}>
+            <Menu.Item leftSection={<IconEye size={14} />} onClick={(e) => { e.stopPropagation(); navigate(`/organizations/${row._id}`); }}>
               View details
             </Menu.Item>
             {row.isSuspended ? (
@@ -116,7 +116,7 @@ export function OrganizationsPage() {
         page={list.page}
         pages={list.pages}
         onPageChange={list.setPage}
-        onRowClick={(row) => navigate(`/admin/organizations/${row._id}`)}
+        onRowClick={(row) => navigate(`/organizations/${row._id}`)}
         emptyTitle="No organizations yet"
         emptyDescription="Create an organization and hand its owner login to your client."
       />
@@ -124,7 +124,7 @@ export function OrganizationsPage() {
       <CreateOrganizationDrawer
         opened={creating}
         onClose={() => setCreating(false)}
-        onCreated={(org) => navigate(`/admin/organizations/${org._id}`)}
+        onCreated={(org) => navigate(`/organizations/${org._id}`)}
       />
     </>
   );

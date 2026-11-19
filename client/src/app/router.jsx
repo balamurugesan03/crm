@@ -5,8 +5,6 @@ import { Center, Loader } from '@mantine/core';
 import { AppLayout } from '../layout/AppLayout.jsx';
 import { ProtectedRoute } from '../layout/ProtectedRoute.jsx';
 import { PublicOnlyRoute } from '../layout/PublicOnlyRoute.jsx';
-import { AdminLayout } from '../layout/AdminLayout.jsx';
-import { AdminRoute } from '../layout/AdminRoute.jsx';
 
 // Route-level code splitting: each page is its own chunk.
 const page = (loader, name) => lazy(() => loader().then((m) => ({ default: m[name] })));
@@ -38,13 +36,6 @@ const ReceivablesPage = page(() => import('../features/finance/ReceivablesPage.j
 const GstReturnsPage = page(() => import('../features/finance/GstReturnsPage.jsx'), 'GstReturnsPage');
 const AutomationsPage = page(() => import('../features/automations/AutomationsPage.jsx'), 'AutomationsPage');
 const PrintDocumentPage = page(() => import('../features/print/PrintDocumentPage.jsx'), 'PrintDocumentPage');
-const AdminDashboardPage = page(() => import('../features/admin/AdminDashboardPage.jsx'), 'AdminDashboardPage');
-const OrganizationsPage = page(() => import('../features/admin/OrganizationsPage.jsx'), 'OrganizationsPage');
-const OrganizationDetailPage = page(() => import('../features/admin/OrganizationDetailPage.jsx'), 'OrganizationDetailPage');
-const PlansPage = page(() => import('../features/admin/PlansPage.jsx'), 'PlansPage');
-const SettlementsPage = page(() => import('../features/admin/SettlementsPage.jsx'), 'SettlementsPage');
-const BrandingPage = page(() => import('../features/admin/BrandingPage.jsx'), 'BrandingPage');
-const SuperAdminsPage = page(() => import('../features/admin/SuperAdminsPage.jsx'), 'SuperAdminsPage');
 const NotFoundPage = page(() => import('../features/NotFoundPage.jsx'), 'NotFoundPage');
 
 export function PageLoader() {
@@ -96,22 +87,6 @@ export function AppRouter() {
           <Route path="gst-returns" element={<GstReturnsPage />} />
         </Route>
 
-        <Route
-          path="/admin"
-          element={
-            <AdminRoute>
-              <AdminLayout />
-            </AdminRoute>
-          }
-        >
-          <Route index element={<AdminDashboardPage />} />
-          <Route path="organizations" element={<OrganizationsPage />} />
-          <Route path="organizations/:id" element={<OrganizationDetailPage />} />
-          <Route path="plans" element={<PlansPage />} />
-          <Route path="settlements" element={<SettlementsPage />} />
-          <Route path="branding" element={<BrandingPage />} />
-          <Route path="super-admins" element={<SuperAdminsPage />} />
-        </Route>
 
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

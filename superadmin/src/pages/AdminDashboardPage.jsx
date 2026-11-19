@@ -5,10 +5,10 @@ import { BarChart, DonutChart } from '@mantine/charts';
 import { useQuery } from '@tanstack/react-query';
 import { IconBuildingSkyscraper, IconUsers, IconCoin, IconTrendingUp } from '@tabler/icons-react';
 
-import { PageHeader } from '../../components/PageHeader.jsx';
-import { StatCard } from '../../components/StatCard.jsx';
-import { EmptyState } from '../../components/EmptyState.jsx';
-import { adminApi, formatINR as formatCurrency, STATUS_COLORS } from '../../api/adminApi.js';
+import { PageHeader } from '../components/PageHeader.jsx';
+import { StatCard } from '../components/StatCard.jsx';
+import { EmptyState } from '../components/EmptyState.jsx';
+import { adminApi, formatINR as formatCurrency, STATUS_COLORS } from '../api/adminApi.js';
 
 const PLAN_COLORS = { trial: 'gray.6', starter: 'blue.6', pro: 'indigo.6', enterprise: 'grape.6' };
 const EXTRA_COLORS = ['teal.6', 'orange.6', 'cyan.6', 'pink.6', 'lime.6', 'red.6'];
@@ -74,7 +74,7 @@ export function AdminDashboardPage() {
           <Stack gap={0}>
             {data.expiringSoon.map((o) => (
               <Group key={o._id} justify="space-between" py="xs" style={{ borderBottom: '1px solid var(--app-border)' }}>
-                <Text component={Link} to={`/admin/organizations/${o._id}`} fw={500} size="sm">{o.name}</Text>
+                <Text component={Link} to={`/organizations/${o._id}`} fw={500} size="sm">{o.name}</Text>
                 <Group gap="sm">
                   <Badge variant="light" tt="capitalize">{o.plan}</Badge>
                   <Badge color={STATUS_COLORS[o.subscriptionStatus]} variant="light" tt="capitalize">{o.subscriptionStatus.replace('_', ' ')}</Badge>

@@ -12,6 +12,8 @@ import {
   verifyRefreshToken,
   REFRESH_COOKIE_NAME,
   refreshCookieOptions,
+  ADMIN_REFRESH_COOKIE_NAME,
+  adminRefreshCookieOptions,
 } from '../utils/token.js';
 
 export async function uniqueSlug(base) {
@@ -72,6 +74,11 @@ export const login = catchAsync(async (req, res) => {
     throw new AppError('This account has been deactivated', 403);
   }
 
+  // Core super admins (no workspace) have their own sign-in at /admin/login.
+  if (user.isSuperAdmin && !user.organization) {
+    throw new AppError('Super admin accounts sign in from the Super Admin console, not the workspace login', 403);
+  }
+
   const organization = await Organization.findById(user.organization);
   if (organization?.isSuspended && !user.isSuperAdmin) {
     throw new AppError('This workspace has been suspended. Contact support for assistance.', 403);
@@ -85,6 +92,52 @@ export const login = catchAsync(async (req, res) => {
   res.cookie(REFRESH_COOKIE_NAME, refreshToken, refreshCookieOptions());
 
   res.json({ user: user.toSafeJSON(), organization, accessToken });
+});
+
+// Separate sign-in for the platform super admin console. Only super admin accounts are accepted;
+// anyone else gets the same generic error so the endpoint does not reveal which emails exist.
+export const adminLogin = catchAsync(async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await User.findOne({ email, isSuperAdmin: true });
+  if (!user || !(await user.comparePassword(password))) {
+    throw new AppError('Invalid super admin email or password', 401);
+  }
+  if (!user.isActive) {
+    throw new AppError('This super admin account has been disabled', 403);
+  }
+
+  user.lastLoginAt = new Date();
+  await user.save();
+
+  const organization = user.organization ? await Organization.findById(user.organization) : null;
+  const accessToken = signAccessToken(user);
+  const refreshToken = signRefreshToken(user);
+  res.cookie(ADMIN_REFRESH_COOKIE_NAME, refreshToken, adminRefreshCookieOptions());
+
+  res.json({ user: user.toSafeJSON(), organization, accessToken });
+});
+
+export const adminRefresh = catchAsync(async (req, res) => {
+  const token = req.cookies?.[ADMIN_REFRESH_COOKIE_NAME];
+  if (!token) throw new AppError('Not authenticated', 401);
+
+  let payload;
+  try {
+    payload = verifyRefreshToken(token);
+  } catch {
+    throw new AppError('Session expired, please log in again', 401);
+  }
+
+  const user = await User.findById(payload.sub);
+  if (!user || !user.isActive || !user.isSuperAdmin) throw new AppError('Not authenticated', 401);
+
+  res.json({ accessToken: signAccessToken(user) });
+});
+
+export const adminLogout = catchAsync(async (req, res) => {
+  res.clearCookie(ADMIN_REFRESH_COOKIE_NAME, adminRefreshCookieOptions());
+  res.status(204).send();
 });
 
 export const refresh = catchAsync(async (req, res) => {

@@ -9,7 +9,8 @@ import { useAuthStore } from '../store/authStore.js';
 import { authApi } from '../api/authApi.js';
 
 export function AdminLayout() {
-  const [opened, { toggle }] = useDisclosure(false);  const navigate = useNavigate();
+  const [opened, { toggle }] = useDisclosure(false);
+  const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
   const clearSession = useAuthStore((s) => s.clearSession);
 

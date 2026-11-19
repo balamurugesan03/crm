@@ -2,10 +2,10 @@ import { Text, Badge } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 
-import { PageHeader } from '../../components/PageHeader.jsx';
-import { DataTable } from '../../components/DataTable.jsx';
-import { useResourceList } from '../../hooks/useResourceList.js';
-import { adminApi, PAYMENT_MODE_OPTIONS, BILLING_CYCLE_LABELS, formatINR } from '../../api/adminApi.js';
+import { PageHeader } from '../components/PageHeader.jsx';
+import { DataTable } from '../components/DataTable.jsx';
+import { useResourceList } from '../hooks/useResourceList.js';
+import { adminApi, PAYMENT_MODE_OPTIONS, BILLING_CYCLE_LABELS, formatINR } from '../api/adminApi.js';
 
 const MODE_LABELS = Object.fromEntries(PAYMENT_MODE_OPTIONS.map((o) => [o.value, o.label]));
 
@@ -58,7 +58,7 @@ export function SettlementsPage() {
         page={list.page}
         pages={list.pages}
         onPageChange={list.setPage}
-        onRowClick={(row) => row.organization?._id && navigate(`/admin/organizations/${row.organization._id}`)}
+        onRowClick={(row) => row.organization?._id && navigate(`/organizations/${row.organization._id}`)}
         emptyTitle="No settlements yet"
         emptyDescription="Record a payment from an organization's page."
       />

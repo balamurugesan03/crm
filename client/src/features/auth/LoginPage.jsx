@@ -27,8 +27,7 @@ export function LoginPage() {
     mutationFn: authApi.login,
     onSuccess: (data) => {
       setSession(data);
-      const home = data.user?.isSuperAdmin && !data.organization ? '/admin' : '/';
-      navigate(location.state?.from?.pathname || home, { replace: true });
+      navigate(location.state?.from?.pathname || '/', { replace: true });
     },
   });
 

@@ -5,8 +5,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { notifications } from '@mantine/notifications';
 import { IconInfoCircle } from '@tabler/icons-react';
 
-import { FormDrawer } from '../../components/FormDrawer.jsx';
-import { adminApi, apiError } from '../../api/adminApi.js';
+import { FormDrawer } from '../components/FormDrawer.jsx';
+import { adminApi, apiError } from '../api/adminApi.js';
 import { SettlementFields, EMPTY_SETTLEMENT, settlementPayload } from './SettlementFields.jsx';
 
 const INITIAL = { name: '', ownerName: '', ownerEmail: '', ownerPassword: '', plan: 'trial', recordPayment: false, settlement: EMPTY_SETTLEMENT };
